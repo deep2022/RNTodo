@@ -7,6 +7,7 @@ import { Ionicons } from 'react-native-vector-icons'
 
 import ListScreen from '../screens/List'
 import ModalScreen from '../screens/Modal'
+import SettingScreen from '../screens/Settings'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -18,6 +19,7 @@ export default function MainStackNavigator() {
          <Stack.Navigator>
         <Stack.Screen name='List' component={ListScreen} options={{headerShown: false}} />
         <Stack.Screen name='Modal' component={ModalScreen} options={{headerShown: false}} />
+        <Stack.Screen name='Settings' component={SettingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
