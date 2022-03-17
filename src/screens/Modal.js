@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Button, TextInput, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { Field, reduxForm, change } from 'redux-form';
 import { Calendar } from 'react-native-calendars';
@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/Ionicons'
+import { Mode } from '../components/DarkMode';
 
 const Form = (props) => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const Form = (props) => {
   const [date, setDate] = useState('')
   const [image, setImage] = useState('')
   const { handleSubmit,navigation } = props;
+  const {dark} = useContext(Mode)
   const onSubmit = (values) => {
     return (
     navigation.navigate('List')
@@ -21,7 +23,7 @@ const Form = (props) => {
   const renderInput = ({ input: { onChange, ...input }, ...rest}) => {
     return (
     <View style={{flexDirection: 'row', marginBottom: 8,borderColor: 'blue',borderWidth: 2,borderRadius: 4}}>
-    <TextInput style={{width: '85%'}}onChangeText={onChange} {...input} {...rest} />
+    <TextInput style={{width: '85%'}}onChangeText={onChange} {...input} {...rest} onFocus={data=> console.log(data,"Focus data")} />
     <Icon style={{left: 300, marginTop: 12,position: 'absolute'}}name="list" size={20} color="black" />
     </View>
     )
@@ -76,10 +78,10 @@ includeBase64: true,
 launchImageLibrary(options, response => {
   let source = ""
   if (response.error) {
-    console.log('ImagePicker Error: ', response.error);
+    console.log('ImagePicker Error: ', response.error)
     } else {
     // You can also display the image using data:
-    source = response.assets[0];
+    source = response.assets[0]
     input.onChange(source.uri)
     }
 });
@@ -124,14 +126,13 @@ const renderLocation = ({ input, label, meta: { touched, error }, ...custom }) =
   )
 }
   return (
-    <View style={styles.root}>
-      <Text style={{textAlign: 'center',fontSize: 24, fontWeight: 'bold',margin: 30, color: 'black'}}>Add New Task</Text>
+    <View style={dark ? [styles.root,{backgroundColor: 'black'}]:[styles.root,{backgroundColor: 'white'}] }>
+      <Text style={dark ? {textAlign: 'center',fontSize: 24, fontWeight: 'bold',margin: 30, color: 'white'}: {textAlign: 'center',fontSize: 24, fontWeight: 'bold',margin: 30, color: 'black'} }>Add New Task</Text>
       <Field
         name={'Task'}
         props={{
           placeholder: 'Task'
         }}
-  
         component={renderInput}
       />
       <Field 
@@ -147,7 +148,7 @@ const renderLocation = ({ input, label, meta: { touched, error }, ...custom }) =
       component={renderLocation}
       />
       <View style={{margin: 100, borderRadius: 6,borderWidth: 2}}>
-      <Button title={'Submit'} onPress={handleSubmit(onSubmit)} color={'black'} />
+      <Button title={'Submit'} onPress={handleSubmit(onSubmit)} color={dark ? 'white' : 'black'} />
       </View>
     </View>
     
@@ -159,7 +160,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
   },
   input: {
     padding: 8,
