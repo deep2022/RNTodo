@@ -15,12 +15,10 @@ Button,
 Image,
 PermissionsAndroid
 } from 'react-native';
-import SplashScreen from 'react-native-splash-screen'
 export default function App() {
   useEffect( () => {
-      requestCameraPermission(),
-      SplashScreen.hide()
-    },[])
+      requestCameraPermission()
+    })
     const requestCameraPermission = async () => {
       try {
         const granted = await PermissionsAndroid.requestMultiple([
