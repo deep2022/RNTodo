@@ -8,7 +8,9 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Mode } from '../components/DarkMode';
+import I18n from '../components/I18n';
 
+// Modal screen to add new Task with added language property
 const Form = (props) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false)
@@ -23,7 +25,7 @@ const Form = (props) => {
   const renderInput = ({ input: { onChange, ...input }, ...rest}) => {
     return (
     <View style={{flexDirection: 'row', marginBottom: 8,borderColor: 'blue',borderWidth: 2,borderRadius: 4}}>
-    <TextInput style={{width: '85%'}}onChangeText={onChange} {...input} {...rest} onFocus={data=> console.log(data,"Focus data")} />
+    <TextInput style={{width: '85%'}}onChangeText={onChange} {...input} {...rest} />
     <Icon style={{left: 300, marginTop: 12,position: 'absolute'}}name="list" size={20} color="black" />
     </View>
     )
@@ -32,8 +34,6 @@ const Form = (props) => {
     return (
         <View>
           {console.log(input.value)}
-          {/* <TextInput style = {styles.input} editable={false} value={input.value.toString()} />
-        <Button onPress={()=> setOpen(open => !open)} title='Add Date'></Button> */}
         <View style={{flexDirection: 'row',marginTop: 10, marginBottom: 8,borderColor: 'blue',borderWidth: 2,borderRadius: 4}}>
         <TouchableOpacity style = {{width: '90%'}} onPress={()=> setOpen(open => !open)}><TextInput placeholder = {'Deadline of Task'} editable={false} value={input.value.toString()} />
         <Icon style={{left: 300, marginTop: 12,position: 'absolute'}}name="calendar" size={20} color="black" />
@@ -41,8 +41,7 @@ const Form = (props) => {
         </View>
         {
           open &&
-        // <DateTimePicker {...input} {...custom} autoOk={true} value = {new Date(Date.now())} onChange={(event, value) => (setOpen(false), input.onChange(value))} />
-        <Calendar
+          <Calendar
         {...input} {...custom}
   onDayPress={day => {
     console.log('selected day', day),
@@ -89,8 +88,6 @@ launchImageLibrary(options, response => {
 const renderImage = ({ input, label, meta: { touched, error }, ...custom }) => {
   return( 
   <View style={{flexDirection: 'row',marginTop: 10, marginBottom: 8,borderColor: 'blue',borderWidth: 2,borderRadius: 4}}>
-    {/* <TextInput style = {styles.input} editable={false} value={input.value} />
-  <Button title="Add Image" {...input} {...custom} onPress={()=> (openGallery({input}))} /> */}
   <TouchableOpacity style = {{width: '100%'}} onPress={()=> openGallery({input})}><TextInput editable={false} placeholder = "Add Image" value={input.value.toString()} />
   <Icon style={{left: 300, marginTop: 12,position: 'absolute'}}name="image" size={20} color="black" />
   </TouchableOpacity>
@@ -127,7 +124,7 @@ const renderLocation = ({ input, label, meta: { touched, error }, ...custom }) =
 }
   return (
     <View style={dark ? [styles.root,{backgroundColor: 'black'}]:[styles.root,{backgroundColor: 'white'}] }>
-      <Text style={dark ? {textAlign: 'center',fontSize: 24, fontWeight: 'bold',margin: 30, color: 'white'}: {textAlign: 'center',fontSize: 24, fontWeight: 'bold',margin: 30, color: 'black'} }>Add New Task</Text>
+      <Text style={dark ? {textAlign: 'center',fontSize: 24, fontWeight: 'bold',margin: 30, color: 'white'}: {textAlign: 'center',fontSize: 24, fontWeight: 'bold',margin: 30, color: 'black'} }>{I18n.t('Task')}</Text>
       <Field
         name={'Task'}
         props={{
@@ -173,4 +170,3 @@ const styles = StyleSheet.create({
 });
 
 export default reduxForm({form: 'inputForm',destroyOnUnmount:false})(Form);
-// this.props.dispatch(change('JobsForm', 'salary.max_salary', undefined));

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import I18n from "./I18n";
 
+// functional component for searchbar
 const SearchComponent = ({ onSearchEnter }) => {
   const [term, setTerm] = useState("");
 
@@ -9,7 +11,7 @@ const SearchComponent = ({ onSearchEnter }) => {
     <View style={styles.searchWrapperStyle}>
       <Icon size={18} name="search" color="black" style={styles.iconStyle} />
       <TextInput
-        placeholder="Search"
+        placeholder={I18n.t("Search")}
         placeholderTextColor="black"
         style={styles.searchInputStyle}
         value={term}

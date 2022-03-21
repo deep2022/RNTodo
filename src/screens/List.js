@@ -11,8 +11,9 @@ import {useIsFocused} from '@react-navigation/native'
 import SearchBar from '../components/SearchBar'
 import { Mode } from '../components/DarkMode'
 import I18n from '../components/I18n'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-
+// Added Flatllist to render Items and asyncstorage for local storage
 let List = (props) => {
     const [items, setItem] = useState([])
     const { data,navigation } = props
@@ -24,6 +25,15 @@ let List = (props) => {
     const dispatch = useDispatch()
     const isFocused = useIsFocused()
     useEffect(()=> {
+      async function fetch(){
+      const localdata = await AsyncStorage.getItem('Item')
+      console.log(localdata,'local asyncStorage')
+      setItem(JSON.parse(localdata))
+      setFilter(JSON.parse(localdata))
+      }
+      fetch()
+    },[])
+    useEffect(()=> {
       if(isFocused){
       console.log("renderSubmitteddata called");
       renderSubmittedData();
@@ -33,7 +43,7 @@ let List = (props) => {
       filterData();
     },[text])
     const {dark} = useContext(Mode)
-    const renderSubmittedData = () => {
+    const renderSubmittedData = async () => {
         setRefresh(true)
         const obj = {Date: data.Date, Task: data.Task, Image: data.Image, Location: data.Location}
         if(obj.Date === undefined || obj.Task === undefined || obj.Image === undefined){
@@ -45,6 +55,13 @@ let List = (props) => {
         setRefresh(false)
         dispatch(reset('inputForm'))
         setFilter(i => [...i,obj])
+        const local = await AsyncStorage.getItem('Item')
+        if(local === null){
+          await AsyncStorage.setItem('Item',JSON.stringify(obj))
+        }
+        else{
+          await AsyncStorage.setItem('Item',JSON.stringify([...items,obj]))
+        }
     }
     }
     console.log(I18n.t('greeting'))
@@ -77,7 +94,7 @@ let List = (props) => {
       )
     }
     return (
-      <View style={!dark ? {backgroundColor: 'white',flex: 1,alignItems: 'center'} : {backgroundColor: 'black',flex: 1,alignItems: 'center'}}>
+      <View style={dark === 'light' ? {backgroundColor: 'white',flex: 1,alignItems: 'center'} : {backgroundColor: 'black',flex: 1,alignItems: 'center'}}>
       {items.length !==0 ? (
       <FlatList 
         style = {{top: 30, padding: 5}}
@@ -89,9 +106,9 @@ let List = (props) => {
                 <Image source={{uri: item.Image}} resizeMethod={'auto'} resizeMode={'contain'} style={{width: 100, height: 100}}/>
                 <View style={{flexDirection: 'column-reverse'}}>
                 <Text style={{fontWeight:'bold',marginTop: 10, marginBottom: 10}}>{item.Date}</Text>
-                <Text style={{fontWeight:'bold',marginTop: 10, marginBottom: 10}}>{I18n.t('greeting')}</Text>
                 <Text style={{fontWeight:'bold', marginBottom: 10,marginTop: 10}}> {item.Task}</Text> 
                 <Text style={{fontWeight:'bold', marginBottom: 10,marginTop: 10}}> {item.Location.latitude} , {item.Location.longitude} </Text> 
+                <Text style={{fontWeight:'bold',marginTop: 10, marginBottom: 10}}>{I18n.t('greeting')}</Text>
                 </View>
                 </View>
                 </Card>
@@ -107,13 +124,13 @@ let List = (props) => {
       />
       
       ): (
-        <TouchableOpacity style={{top: 300,height: 60}} onPress={() => renderSubmittedData()}><Ionicons name="reload-circle-sharp" size={60} color={dark ? 'blue': 'black'}/></TouchableOpacity>
+        <TouchableOpacity style={{top: 300,height: 60}} onPress={() => renderSubmittedData()}><Ionicons name="reload-circle-sharp" size={60} color={dark==='dark' ? 'blue': 'black'}/></TouchableOpacity>
       )
       }
       <View style={{position: 'absolute', top: '30%', left: '1%'}}>
       </View>
       <TouchableOpacity style = {{color:'white',top: 600,right: 20,position: 'absolute'}} onPress={() => navigation.navigate('Modal')}><Ionicons name="add-circle-sharp" size={72} color={'blue'}/></TouchableOpacity>
-      <Ionicons style={{position: 'absolute',left: '90%', alignItems: 'flex-start'}} name="settings" size={36} color={dark ? 'white': 'black'} onPress={() => navigation.navigate('Settings')}/>
+      <Ionicons style={{position: 'absolute',left: '90%', alignItems: 'flex-start'}} name="settings" size={36} color={dark==='dark' ? 'white': 'black'} onPress={() => navigation.navigate('Settings')}/>
     </View>
     )
     }

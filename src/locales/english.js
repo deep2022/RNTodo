@@ -1,3 +1,5 @@
 export default {  
-    greeting: 'Hi!'
+    greeting: 'Hi!',
+    Search: 'Search',
+    Task: 'Add New Task'
   };
