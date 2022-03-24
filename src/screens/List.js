@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { connect,useDispatch } from 'react-redux'
+import { connect,useDispatch, useSelector } from 'react-redux'
 import { formValueSelector } from 'redux-form'
 import { Modal, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, FlatList,PermissionsAndroid, Image, ScrollView, RefreshControl } from 'react-native'
 import {useState} from 'react'
@@ -12,30 +12,43 @@ import SearchBar from '../components/SearchBar'
 import { Mode } from '../components/DarkMode'
 import I18n from '../components/I18n'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { fetchDetails } from './Login/actions';
 
-// Added Flatllist to render Items and asyncstorage for local storage
+// Main UI component with flatlist added and searchbar component
+// AsyncStorage functionality added for offline working of the data
 let List = (props) => {
     const [items, setItem] = useState([])
     const { data,navigation } = props
     const [refresh, setRefresh] = useState(false)
     const [text, setText] = useState('')
     const [filter, setFilter] = useState([])
-    console.log(text)
-    console.log(data,"raw data")
     const dispatch = useDispatch()
     const isFocused = useIsFocused()
+    const userEmail = useSelector(state => state)
+    const obj = {
+      token: userEmail.Auth.token,
+      entityId: userEmail.Auth.id,
+      entityType: userEmail.Auth.user
+  }
+    useEffect(()=> {
+        async function storeToken(){
+            await AsyncStorage.setItem('Token', JSON.stringify(userEmail))
+        }
+        storeToken()
+
+    },[userEmail.Auth.id])
     useEffect(()=> {
       async function fetch(){
       const localdata = await AsyncStorage.getItem('Item')
-      console.log(localdata,'local asyncStorage')
+      if(JSON.parse(localdata) !== null){
       setItem(JSON.parse(localdata))
       setFilter(JSON.parse(localdata))
+      }
       }
       fetch()
     },[])
     useEffect(()=> {
       if(isFocused){
-      console.log("renderSubmitteddata called");
       renderSubmittedData();
       }
     },[isFocused])
@@ -43,6 +56,7 @@ let List = (props) => {
       filterData();
     },[text])
     const {dark} = useContext(Mode)
+    // function used to update ui with submitted data in the form
     const renderSubmittedData = async () => {
         setRefresh(true)
         const obj = {Date: data.Date, Task: data.Task, Image: data.Image, Location: data.Location}
@@ -64,7 +78,6 @@ let List = (props) => {
         }
     }
     }
-    console.log(I18n.t('greeting'))
     const filterData = ()=> {
       let data = []
       if(text !== ''){
@@ -75,29 +88,19 @@ let List = (props) => {
       setFilter(items)
     }
     }
-    const search = () => {
-      return (
-        <>
-        <TextInput
-            style={{
-              height: 50,
-              width: '100%',
-              justifyContent: 'center',
-              padding: 5,
-              borderColor: 'gray',
-              borderBottomWidth: 1,
-            }}
-            onChangeText={setText}
-            value={text}
-            />
-          </>
-      )
-    }
+
     return (
       <View style={dark === 'light' ? {backgroundColor: 'white',flex: 1,alignItems: 'center'} : {backgroundColor: 'black',flex: 1,alignItems: 'center'}}>
+        {userEmail.Auth.data.length !== 0 ?
+        <Text style={dark === 'light'? {color: 'black', paddingTop: 10}: {color:'white', paddingTop: 10}}>Payment count {userEmail.Auth.data[0]} and Total amount Payment {userEmail.Auth.data[1]}</Text>
+        :
+        <Text style={dark === 'light'? {color: 'black', paddingTop: 10}: {color:'white', paddingTop: 10}}>No Data fetched from the server</Text>
+        }
+        <Button style={{backgroundColor: 'blue' , alignSelf:'center',marginTop: '5%'}} color={'white'} onPress={()=> dispatch(fetchDetails(obj)) }>Fetch data</Button>
+      <Text style={dark === 'light'? {color: 'black', paddingTop: 10}: {color:'white', paddingTop: 10}}>Hi! {userEmail.Auth.id}</Text>
       {items.length !==0 ? (
       <FlatList 
-        style = {{top: 30, padding: 5}}
+        style = {{top: 30, padding: 5, width: '95%'}}
         data = {filter}
         renderItem = {({item})=>(
             <View style={{flex: 1, flexDirection: 'row',paddingVertical: 10}}>
@@ -121,6 +124,12 @@ let List = (props) => {
           <SearchBar onSearchEnter={(t)=> setText(t)} />
         }
         ListHeaderComponentStyle={{top: 10, marginBottom: 20}}
+        ListFooterComponent={(
+          <View>
+            <Text style={{textAlign: 'center'}}>Copyright 2022</Text>
+          </View>
+        )}
+        ListFooterComponentStyle={{marginBottom: '10%'}}
       />
       
       ): (
@@ -129,7 +138,7 @@ let List = (props) => {
       }
       <View style={{position: 'absolute', top: '30%', left: '1%'}}>
       </View>
-      <TouchableOpacity style = {{color:'white',top: 600,right: 20,position: 'absolute'}} onPress={() => navigation.navigate('Modal')}><Ionicons name="add-circle-sharp" size={72} color={'blue'}/></TouchableOpacity>
+      <TouchableOpacity style = {{color:'white',top: '85%',right: '5%',position: 'absolute'}} onPress={() => navigation.navigate('Modal')}><Ionicons name="add-circle-sharp" size={72} color={'blue'}/></TouchableOpacity>
       <Ionicons style={{position: 'absolute',left: '90%', alignItems: 'flex-start'}} name="settings" size={36} color={dark==='dark' ? 'white': 'black'} onPress={() => navigation.navigate('Settings')}/>
     </View>
     )
