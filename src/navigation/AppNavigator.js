@@ -12,15 +12,13 @@ import SettingScreen from '../screens/Settings'
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator()
-
+// App Navigator after successfully logging the user
 export default function MainStackNavigator() {
   return (
-    <NavigationContainer>
          <Stack.Navigator>
         <Stack.Screen name='List' component={ListScreen} options={{headerShown: false}} />
         <Stack.Screen name='Modal' component={ModalScreen} options={{headerShown: false}} />
         <Stack.Screen name='Settings' component={SettingScreen} />
       </Stack.Navigator>
-    </NavigationContainer>
   )
 }
