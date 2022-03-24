@@ -4,22 +4,29 @@ import {View} from 'react-native'
 import I18n from './I18n';
 const Mode = createContext();
 
-// ContextAPI for updating Theme and Language
+// ContextAPI for updating Theme and Language in the settings page
 const ModeProvider = (props) => {
-    const [dark, setDark] = useState('light') 
-    const [lang, setLang] = useState('en')
+    const [dark, setDark] = useState(null) 
+    const [lang, setLang] = useState(null)
     useEffect(()=> {
         async function Settings(){
             const j = await AsyncStorage.getItem('language')
-            console.log(j,'language')
-            setLang(j)
             const k = await AsyncStorage.getItem('theme')
-            console.log(k,'theme')
-            setDark(k)
+            if(j === null){
+            setLang('en')
+            }
+            else{
+                setLang(j)
+            }
+            if(k === null){
+            setDark('light')
+            }
+            else{
+                setDark(k)
+            }
         }
         Settings()
     })
-    console.log(dark,lang)
     I18n.locale = lang
     return(
             <Mode.Provider value = {{dark, setDark, lang , setLang}}>
