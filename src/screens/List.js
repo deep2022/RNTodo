@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 import { connect,useDispatch, useSelector } from 'react-redux'
 import { formValueSelector } from 'redux-form'
-import { Modal, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, FlatList,PermissionsAndroid, Image, ScrollView, RefreshControl } from 'react-native'
+import { Text, TouchableOpacity, View, FlatList, Image, ActivityIndicator } from 'react-native'
 import {useState} from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import {Button, Card, Searchbar, TextInput} from 'react-native-paper'
+import {Button, Card} from 'react-native-paper'
 import { reset } from 'redux-form'
-import { render } from 'react-native/Libraries/Renderer/implementations/ReactNativeRenderer-prod'
 import {useIsFocused} from '@react-navigation/native'
 import SearchBar from '../components/SearchBar'
 import { Mode } from '../components/DarkMode'
@@ -96,7 +95,7 @@ let List = (props) => {
         :
         <Text style={dark === 'light'? {color: 'black', paddingTop: 10}: {color:'white', paddingTop: 10}}>No Data fetched from the server</Text>
         }
-        <Button style={{backgroundColor: 'blue' , alignSelf:'center',marginTop: '5%'}} color={'white'} onPress={()=> dispatch(fetchDetails(obj)) }>Fetch data</Button>
+        {userEmail.Auth.loading ? <ActivityIndicator size="large" color={'blue'} /> : <Button style={{backgroundColor: 'blue' , alignSelf:'center',marginTop: '5%'}} color={'white'} onPress={()=> dispatch(fetchDetails(obj)) }>Fetch data</Button>}
       <Text style={dark === 'light'? {color: 'black', paddingTop: 10}: {color:'white', paddingTop: 10}}>Hi! {userEmail.Auth.id}</Text>
       {items.length !==0 ? (
       <FlatList 

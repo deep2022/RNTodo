@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {createContext, useEffect, useState} from 'react'
-import {View} from 'react-native'
 import I18n from './I18n';
 const Mode = createContext();
 
@@ -26,7 +25,7 @@ const ModeProvider = (props) => {
             }
         }
         Settings()
-    })
+    },[])
     I18n.locale = lang
     return(
             <Mode.Provider value = {{dark, setDark, lang , setLang}}>

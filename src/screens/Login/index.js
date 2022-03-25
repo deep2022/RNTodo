@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import { Field , reduxForm } from 'redux-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { View, Text , Platform, StyleSheet, ScrollView, TouchableOpacity ,KeyboardAvoidingView, SafeAreaView, ActivityIndicator } from 'react-native'
+import { Platform, StyleSheet, ScrollView ,KeyboardAvoidingView, SafeAreaView, ActivityIndicator } from 'react-native'
 import Colors  from '../../utils/Colors'
 import { loginUser } from './actions'
 import { FormInput , CustomButton } from '../../components'

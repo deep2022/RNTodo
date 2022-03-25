@@ -5,12 +5,10 @@ import {
   TextInput,
   StyleSheet,
   Text,
-  Dimensions,
   TouchableOpacity,
 } from 'react-native';
 import {Field, reduxForm, change} from 'redux-form';
 import {Calendar} from 'react-native-calendars';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import {useDispatch} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Geolocation from '@react-native-community/geolocation';
@@ -50,10 +48,7 @@ const renderInput = ({input}) => {
   );
 };
 const Form = props => {
-  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState('');
-  const [image, setImage] = useState('');
   const {handleSubmit, navigation} = props;
   const {dark} = useContext(Mode);
   theme = dark;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import I18n from "./I18n";
 
