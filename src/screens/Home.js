@@ -3,12 +3,35 @@ import {View, Text, Button, StatusBar,TouchableOpacity, FlatList} from 'react-na
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons'
 import data from '../data'
-import Header from '../components/Header'
+import Header from '../components/HeaderUI'
+import PushNotification from 'react-native-push-notification'
+import remoteConfig from '@react-native-firebase/remote-config';
 
 const Home = ({navigation}) => {
     const [time, setTime] = useState('Today')
     const [task, setTask] = useState([])
     const [alert, setAlert] = useState(false)
+    const handleNotification = (item, index) => {
+
+        PushNotification.cancelAllLocalNotifications();
+
+        PushNotification.localNotification({
+            channelId: "test-channel",
+            title: "You clicked on " + item,
+            message: item.city,
+            bigText: item + " is one of the largest and most beatiful cities in " + item,
+            color: "red",
+            id: index
+        });
+
+        // PushNotification.localNotificationSchedule({
+        //     channelId: "test-channel",
+        //     title: "Alarm",
+        //     message: "You clicked on " + item + " 20 seconds ago",
+        //     date: new Date(Date.now() + 20 * 1000),
+        //     allowWhileIdle: true,
+        // });
+    }
     const filter = () => {
         const monthData = ['January','February','March','April','May','June','July','August','September','October','November','December']
         if(time === 'Today'){
@@ -29,14 +52,34 @@ const Home = ({navigation}) => {
     useEffect(()=> {
         filter()
     },[time])
+    useEffect(() => {
+        async function remote(){
+        remoteConfig()
+          .setDefaults({
+            hello: 'great',
+          })
+          .then(() => remoteConfig().fetchAndActivate())
+            .then(fetchedRemotely => {
+                if (fetchedRemotely) {
+                console.log('Configs were retrieved from the backend and activated.');
+                } else {
+                console.log(
+                    'No configs were fetched from the backend, and the local configs were already activated',
+                );
+                }
+            });
+            await remoteConfig().fetch(20)
+            const awesomeNewFeature = remoteConfig().getValue('hello');
+        }
+        remote()
+      }, []);
     return (
         <View style={{backgroundColor:'white',flex:1}}>
             <StatusBar backgroundColor={'white'} barStyle={'dark-content'} />
-            <Header />
                 <View style={{flexDirection:'row',marginHorizontal:20,marginVertical:20}}>
-                    <TouchableOpacity style={{paddingHorizontal:20,paddingVertical:10, backgroundColor: time === 'Today' ? 'black':'white',marginRight:20,borderRadius:28,alignSelf:'center'}} onPress={()=> setTime('Today')}><Text style={{color:time === 'Today' ? 'white':'black', fontSize:18,fontWeight:'500'}}>Today</Text></TouchableOpacity>
-                    <TouchableOpacity style={{paddingHorizontal:20,paddingVertical:10, backgroundColor: time === 'Upcoming' ? 'black':'white',marginRight:20,borderRadius:28,alignSelf:'center'}} onPress={()=> setTime('Upcoming')}><Text style={{color:time === 'Upcoming' ? 'white':'black', fontSize:18,fontWeight:'500'}}>Upcoming</Text></TouchableOpacity>
-                    <TouchableOpacity style={{paddingHorizontal:20,paddingVertical:10, backgroundColor: time === 'Done' ? 'black':'white',marginRight:20,borderRadius:32,alignSelf:'center'}} onPress={()=> setTime('Done')}><Text style={{color:time === 'Done' ? 'white':'black', fontSize:18,fontWeight:'500'}}>Task Done</Text></TouchableOpacity>
+                    <TouchableOpacity style={{paddingHorizontal:20,paddingVertical:10, backgroundColor: time === 'Today' ? 'black':'white',marginRight:20,borderRadius:28,alignSelf:'center'}} onPress={()=> (handleNotification('Today'),setTime('Today'))}><Text style={{color:time === 'Today' ? 'white':'black', fontSize:18,fontWeight:'500'}}>Today</Text></TouchableOpacity>
+                    <TouchableOpacity style={{paddingHorizontal:20,paddingVertical:10, backgroundColor: time === 'Upcoming' ? 'black':'white',marginRight:20,borderRadius:28,alignSelf:'center'}} onPress={()=> (handleNotification('Upcoming'),setTime('Upcoming'))}><Text style={{color:time === 'Upcoming' ? 'white':'black', fontSize:18,fontWeight:'500'}}>Upcoming</Text></TouchableOpacity>
+                    <TouchableOpacity style={{paddingHorizontal:20,paddingVertical:10, backgroundColor: time === 'Done' ? 'black':'white',marginRight:20,borderRadius:32,alignSelf:'center'}} onPress={()=> (handleNotification('Done'),setTime('Done'))}><Text style={{color:time === 'Done' ? 'white':'black', fontSize:18,fontWeight:'500'}}>Task Done</Text></TouchableOpacity>
                 </View>
                 <FlatList 
                 data = {task}
@@ -52,11 +95,11 @@ const Home = ({navigation}) => {
                         { time !== 'Done' && 
                         <>
                         <View style={{flexDirection:'row',marginBottom:5}}>
-                        <Icon name={'calendar-outline'} size={20} style={{marginRight:5}} />
+                        {/* <Icon name={'calendar-outline'} size={20} style={{marginRight:5}} /> */}
                             <Text style={{fontWeight:'500'}}>{item.date}</Text>
                         </View>
                         <View style={{flexDirection:'row'}}>
-                        <Icon name={'time-outline'} size={20} style={{marginRight:5,marginTop:5}} />
+                        {/* <Icon name={'time-outline'} size={20} style={{marginRight:5,marginTop:5}} /> */}
                         <Text style={{fontWeight:'500',marginRight:5,marginTop:5}}>{item.time}</Text>
                         <Text style={{fontWeight:'500',marginTop:5}}>{item.reminder}</Text>
                          <Icon1 name={'circle-outline'} size={24} color={'white'} style={{position:'absolute',right:5,marginTop:0}} />
@@ -69,7 +112,7 @@ const Home = ({navigation}) => {
                 <View style={{ flex: 1, width:'100%',position:'absolute',bottom:0,height:80,zIndex:2,opacity:0.3, backgroundColor: 'white' }} />
                 <View style={{alignSelf:'center',zIndex:10}}>
                         <TouchableOpacity onPress={()=> navigation.navigate('Add')} style={{flexDirection:'row',backgroundColor:'black',position:'absolute',bottom:20,alignSelf:'center',paddingHorizontal:15,elevation:5,paddingVertical:5,borderRadius:25,zIndex:90}}>
-                        <Icon name={'add'} size={24} color={'white'} style={{marginTop:5}} />
+                        {/* <Icon name={'add'} size={24} color={'white'} style={{marginTop:5}} /> */}
                         <Text style={{color:'white',fontSize:18,fontWeight:'600',padding:5,zIndex:1}}>Add Task</Text>
                         </TouchableOpacity>
                 </View>

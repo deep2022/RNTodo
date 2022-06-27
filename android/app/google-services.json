@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "361690313330",
+    "project_id": "reactnativeui-14c65",
+    "storage_bucket": "reactnativeui-14c65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361690313330:android:92ddac3d0282ca04ed08eb",
+        "android_client_info": {
+          "package_name": "com.ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361690313330-u8ki8v6667nnvs90ao9v9h2mk0dnm8fg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCd5cQ3lrEV7nzlTDBjem8c1ZqRQKuB6kM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361690313330-u8ki8v6667nnvs90ao9v9h2mk0dnm8fg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
